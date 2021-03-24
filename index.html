@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Homework 4</title>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+		<script type="text/javascript">
+			var classmate_data = [
+				{
+					'first_name': 'John',
+					'last_name' : 'Smith',
+					'shadow'    : 'no',
+					'garlic'    : 'no',
+					'complexion': 'pale'
+				},
+				{
+					'first_name': 'Lee',
+					'last_name' : 'Waters',
+					'shadow'    : 'yes',
+					'garlic'    : 'no',
+					'complexion': 'pale'
+				},
+				{
+					'first_name': 'Emma',
+					'last_name' : 'Johnson',
+					'shadow'    : 'no',
+					'garlic'    : 'yes',
+					'complexion': 'dark'
+				},
+				{
+					'first_name': 'Ava',
+					'last_name' : 'Richardson',
+					'shadow'    : 'yes',
+					'garlic'    : 'yes',
+					'complexion': 'light'
+				},
+				{
+					'first_name': 'Alex',
+					'last_name' : 'Harper',
+					'shadow'    : 'no',
+					'garlic'    : 'no',
+					'complexion': 'medium'
+				},
+			];
+	
+			// Load the Visualization API and the corechart package.
+			google.charts.load('current', {'packages':['corechart']});
+	
+			// Set a callback to run when the Google Visualization API is loaded.
+			google.charts.setOnLoadCallback(drawChart);
+	
+			
+			// Callback that creates and populates a data table,
+			// instantiates the pie chart, passes in the data and
+			// draws it.
+			function drawChart() {
+				var data = new google.visualization.DataTable();
+				classmate_data_processing(data);
+	
+		
+				// Set chart options
+				var options = {'title':'How many vampires in the class?',
+											'width':400,
+											'height':300};
+	
+				// Instantiate and draw our chart, passing in some options.
+				var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+				chart.draw(data, options);
+			}
+	
+			// model of MVC
+			function classmate_data_processing(result_data){
+				// this function process classmate data and create data table
+				var num_human = 0;
+				var num_vampire = 0;
+				for (var i =  0; i <= classmate_data.length - 1; i++) {
+					var vampire_score = 0;
+					if (classmate_data[i]['shadow'] == 'no') {
+						vampire_score += 4;
+					}
+					if (classmate_data[i]['complexion'] == 'pale') {
+						vampire_score += 3;
+					}
+					if (classmate_data[i]['garlic'] == 'no') {
+						vampire_score += 3;
+					}
+					if (vampire_score > 6) {
+						num_vampire ++;
+					}
+					else{
+						num_human ++;
+					}
+				}
+				// Create the data table.
+				result_data.addColumn('string', 'Element');
+				result_data.addColumn('number', 'Vampire');
+				result_data.addRows([     
+					['Human', num_human],
+					['Vampire', num_vampire]
+				]);
+	
+			}
+		</script>
+	</head>
+	<body>
+		<div class="container">
+			<form>
+				<div class="form-row">
+					<div class="form-group col-md-6">
+						<label for="first_name">First Name</label>
+						<input type="text" class="form-control" name="first_name" id="first_name" placeholder="First Name">
+					</div>
+		
+					<div class="form-group col-md-6">
+						<label for="last_name">Last Name</label>
+						<input type="text" class="form-control" name="last_name" id="last_name" placeholder="Last Name">
+					</div>
+				</div>
+		
+				<div class="form-row">
+					<div class="form-group col-md-6">
+						<div class="checkbox">
+							<label><input type="checkbox" name="shadow" id="shadow" value="yes">Casts shadow</label>
+						</div>
+						<div class="checkbox">
+							<label><input type="checkbox" name="garlic" id="garlic" value="yes">Eats garlic</label>
+						</div>
+					</div>
+				</div>
+		
+				<div class="form-row">
+					<div class="form-group col-md-6">
+						<label for="complexion">Complexion</label>
+						<div class="radio">
+							<label><input type="radio" name="complexion" id="pale" value="pale">Pale</label>
+						</div>
+						<div class="radio">
+							<label><input type="radio" name="complexion" id="light" value="light">Light</label>
+						</div>
+						<div class="radio">
+							<label><input type="radio" name="complexion" id="medium" value="medium">Medium</label>
+						</div>
+						<div class="radio">
+							<label><input type="radio" name="complexion" id="dark" value="medium">Dark</label>
+						</div>
+					</div>
+				</div>
+			</form>
+		
+			<div class="col-md-12">
+				<script>
+					function update_data() {
+						var form = document.querySelector("form");
+						var form_data = new FormData(form);
+						classmate_data.push(form_data);
+
+						generateTable(table, classmate_data);
+					}
+				</script>
+				<button class="btn btn-primary" onclick="update_data()">Submit</button>
+			</div>
+			
+			<p id="user_info"></p>
+		</div>
+
+		<div class="container">
+			<div class="form-group">
+				<label for="mySelect">Select Model Logic:</label>
+				<select class="form-control" id="mySelect">
+					<option value='1'>Threshold Based Method</option>
+					<option value='2'>Random Guess</option>
+				</select>   
+		
+				<!-- write a function to display chosen option with a pop up window. -->
+				<button type="button" onclick="display_chosen_option()">Display index</button>
+		
+				<button type="button" onclick="document.getElementById('mySelect').selectedIndex = '-1'">Deselect all options.</button>    
+			</div>
+		</div>
+
+		<div class="container">
+			<table class="table" id="table"></table>
+			<script>
+				function generateTableHead(table, data) {
+					var thead = table.createTHead();
+					var row = thead.insertRow();
+					for (var key of data) {
+						var th = document.createElement("th");
+						var text = document.createTextNode(key);
+						th.appendChild(text);
+						row.appendChild(th);
+					}
+				}
+
+				function generateTable(table, data) {
+					for (var element of data) {
+						var row = table.insertRow();
+						for (key in element) {
+							var cell = row.insertCell();
+							var text = document.createTextNode(element[key]);
+							cell.appendChild(text);
+						}
+					}
+				}
+			
+
+				var table = document.getElementById("table");
+				var data = Object.keys(classmate_data[0]);
+				generateTable(table, classmate_data);
+				generateTableHead(table, data);
+			</script>
+		</div>
+
+		<div id="chart_div"></div>
+	</body>
+</html>
